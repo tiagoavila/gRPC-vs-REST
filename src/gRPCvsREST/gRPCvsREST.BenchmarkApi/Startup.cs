@@ -1,3 +1,5 @@
+using gRPCvsREST.BenchmarkApi.Services;
+using gRPCvsREST.ServerApi.gRPC;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -26,6 +28,16 @@ namespace gRPCvsREST.BenchmarkApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            
+            services.AddHttpClient<ServerApiService>();
+
+            services.AddGrpcClient<Orders.OrdersClient>(options => 
+            { 
+                options.Address = new Uri("https://localhost:64292");
+            });
+
+            // Register the Swagger generator, defining 1 or more Swagger documents
+            services.AddSwaggerGen();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -37,6 +49,16 @@ namespace gRPCvsREST.BenchmarkApi
             }
 
             app.UseHttpsRedirection();
+
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "gRPCvsREST.BenchmarkApi V1");
+            });
 
             app.UseRouting();
 

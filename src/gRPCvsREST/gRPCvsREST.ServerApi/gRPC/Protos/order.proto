@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+option csharp_namespace = "gRPCvsREST.ServerApi.gRPC";
+
+package ServerApi;
+
+service Orders {
+	rpc GetOrders(GerOrdersRequest) returns (GetOrdersResponse) {}
+}
+
+message GerOrdersRequest {}
+
+message GetOrdersResponse {
+	repeated OrderResponse orderslist = 1;
+}
+
+message OrderResponse {
+	string id = 1;
+	string clientname = 2;
+	double total = 3;
+	double discount = 4;
+	repeated OrderItemResponse orderitems = 5;
+}
+
+message OrderItemResponse {
+	string orderid = 1;
+    string productid = 2;
+    string productname = 3;
+    int32 quantity = 4;
+    double unitprice = 5;
+}
